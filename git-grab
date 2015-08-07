@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# TODO: check if this file name overwrites another; fail gracefully
+# TODO: add a second argument to name the downloaded folder
+echo ${1} | sed 's/tree\/master/trunk/g' | { read uri; (svn export --force-interactive $uri); }

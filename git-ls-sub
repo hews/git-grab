@@ -1,0 +1,3 @@
+#!/bin/sh
+
+echo ${1} | sed 's/tree\/master/trunk/g' | { read uri; (svn ls --force-interactive $uri); }
