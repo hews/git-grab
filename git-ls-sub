@@ -12,9 +12,7 @@
 # SOURCE: license_and_attribution
 
 # Here's how you use the command:
-USAGE_TEXT="
-usage: git ls-sub <github_url>
-
+USAGE_TEXT="usage: git ls-sub <github_url>
 "
 # SOURCE: usage
 

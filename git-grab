@@ -11,9 +11,7 @@
 # SOURCE: license_and_attribution
 
 # Here's how you use the command:
-USAGE_TEXT="
-usage: git grab <github_url> [<new_name>]
-
+USAGE_TEXT="usage: git grab <github_url> [<new_name>]
 "
 # SOURCE: usage
 
