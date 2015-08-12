@@ -1,0 +1,70 @@
+#!/usr/bin/env ruby
+
+# Builds completed scripts from includes.
+
+require "colorize"
+
+DEST_DIR = ARGV[0] || "build"
+COMMENT  = "(^[\s]*)#[\s]*"
+
+def parse(line)
+  # source sub-script
+  if line.match(/#{COMMENT}SOURCE/)
+    sub_script_file_path = "scripts/#{line.chomp.split.last}.sh"
+    indentation          = $~.captures[0]
+
+    source_contents = File.read(sub_script_file_path)
+    source_contents.gsub!(/\n/, "\n#{indentation}")
+
+    return indentation + source_contents + "\n"
+
+  # skip comments
+  elsif line.match(/#{COMMENT}TODO/)  ||
+        line.match(/#{COMMENT}FIXME/) ||
+        line.match(/^[\s]*##/)
+    return nil
+
+  # copy line
+  else
+    return line
+  end
+end
+
+# copy the original to the build, parsing each line along the way
+def build_file(original_file_path, destination_file_path)
+  File.open(destination_file_path, 'w') do |build_file|
+    File.read(original_file_path).each_line do |original_line|
+      output_line = parse(original_line)
+      build_file << output_line unless output_line.nil?
+    end
+  end
+end
+
+# strip any places of multiple empty lines in a row
+def clean_file(path)
+  File.write(path, File.read(path).gsub(/[\n]{3,}/, "\n\n"))
+end
+
+def make_executable(path)
+  File.chmod(0754, path)
+end
+
+unless DEST_DIR == "tmp"
+  puts "Building files...".blue
+  puts
+end
+
+["git-grab", "git-ls-sub"].each do |file_name|
+  destination_file_path = "#{DEST_DIR}/#{file_name}"
+  original_file_path    = "./#{file_name}"
+
+  puts "  Building '#{original_file_path}' -> " \
+       "'#{destination_file_path}'.".blue unless DEST_DIR == "tmp"
+
+  build_file(original_file_path, destination_file_path)
+  clean_file(destination_file_path)
+  make_executable(destination_file_path)
+end
+
+puts "  New files built.".green unless DEST_DIR == "tmp"
+puts unless DEST_DIR == "tmp"

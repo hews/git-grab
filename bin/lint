@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby
+
+# Runs ShellCheck on the given builds.
+
+require "colorize"
+
+destination = ARGV[0] || "build"
+
+unless system("shellcheck --version > /dev/null 2>&1")
+  puts "\nPlease install ShellCheck in order to lint shell scripts. " \
+       "Follow system-specific instructions here:".red
+  puts "\nhttps://github.com/koalaman/shellcheck", ""
+
+else
+  puts "\nLinting scripts built to /tmp with ShellCheck...".blue
+
+  failed = false
+
+  ["#{destination}/git-grab", "#{destination}/git-ls-sub"].each do |command|
+    puts "\n  Linting #{command.split("/").last}:".blue
+    output = `shellcheck #{command}`
+    if output.empty?
+      puts "  ShellCheck found no errors.".green
+    else
+      failed = true
+      puts "  " + output.split("\n").join("\n  ")
+    end
+  end
+
+  begin
+    raise "Lint error." if failed
+  rescue
+    exit 1
+  ensure
+    puts
+  end
+end
