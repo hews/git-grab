@@ -21,6 +21,8 @@ EOF
 
 # SOURCE: usage
 
+# SOURCE: translate_url
+
 main() {
   # SOURCE: print_usage_by_default
 
@@ -28,8 +30,9 @@ main() {
 
   # TODO SOURCE: exit if invalid options or signature!
 
-  echo "${1}" | sed 's/tree\/master/trunk/g' \
-              | { read uri; (svn export --force-interactive "$uri"); }
+  git_url="${1}"
+  svn_url="$(translateURL "$git_url")"
+  svn export --force-interactive "$svn_url"
 }
 
 main "$@"

@@ -11,13 +11,16 @@ EOF
 
 # SOURCE: usage
 
+# SOURCE: translate_url
+
 main() {
   # SOURCE: print_usage_by_default
 
   # SOURCE: handle_options
 
-  echo "${1}" | sed 's/tree\/master/trunk/g' \
-              | { read uri; (svn ls --force-interactive "$uri"); }
+  git_url="${1}"
+  svn_url="$(translateURL "$git_url")"
+  svn ls --force-interactive "$svn_url"
 }
 
 main "$@"
