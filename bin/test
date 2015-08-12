@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+
+# Runs shunit2 on /tmp/test_runner.sh.
+
+require "colorize"
+
+unless system("which shunit2 > /dev/null 2>&1")
+  puts "\nPlease install shunit2 in order to test shell scripts, using:".red
+  puts "\n  $ brew install shunit2", ""
+
+else
+  puts "Running tests built to /tmp with shunit2...".blue
+
+
+  begin
+    output = `shunit2 ./tmp/test_runner.sh`
+    puts "  " + output.gsub(/\n/, "\n  ").chomp
+
+    fail if output.match(/FAILED \(failures=.*\)/)
+  rescue
+    exit 1
+  ensure
+    puts
+  end
+end
+
+exit 0

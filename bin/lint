@@ -4,7 +4,10 @@
 
 require "colorize"
 
-destination = ARGV[0] || "build"
+DEST_DIR = ARGV[0] || "build"
+
+files = ["#{DEST_DIR}/git-grab", "#{DEST_DIR}/git-ls-sub"]
+files << "tmp/test_runner.sh" if DEST_DIR == "tmp"
 
 unless system("shellcheck --version > /dev/null 2>&1")
   puts "\nPlease install ShellCheck in order to lint shell scripts. " \
@@ -16,7 +19,7 @@ else
 
   failed = false
 
-  ["#{destination}/git-grab", "#{destination}/git-ls-sub"].each do |command|
+  files.each do |command|
     puts "\n  Linting #{command.split("/").last}:".blue
     output = `shellcheck #{command}`
     if output.empty?

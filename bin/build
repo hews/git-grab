@@ -7,6 +7,9 @@ require "colorize"
 DEST_DIR = ARGV[0] || "build"
 COMMENT  = "(^[\s]*)#[\s]*"
 
+source_files = ["git-grab", "git-ls-sub"]
+source_files << "test/test_runner.sh" if DEST_DIR == "tmp"
+
 def parse(line)
   # source sub-script
   if line.match(/#{COMMENT}SOURCE/)
@@ -49,13 +52,12 @@ def make_executable(path)
   File.chmod(0754, path)
 end
 
-unless DEST_DIR == "tmp"
-  puts "Building files...".blue
-  puts
-end
+###################################
 
-["git-grab", "git-ls-sub"].each do |file_name|
-  destination_file_path = "#{DEST_DIR}/#{file_name}"
+puts("Building files...".blue) unless DEST_DIR == "tmp"
+
+source_files.each do |file_name|
+  destination_file_path = "#{DEST_DIR}/#{file_name.split("/").last}"
   original_file_path    = "./#{file_name}"
 
   puts "  Building '#{original_file_path}' -> " \
@@ -66,5 +68,4 @@ end
   make_executable(destination_file_path)
 end
 
-puts "  New files built.".green unless DEST_DIR == "tmp"
-puts unless DEST_DIR == "tmp"
+puts("  New files built.".green, "") unless DEST_DIR == "tmp"
