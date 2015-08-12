@@ -1,3 +1,23 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-echo ${1} | sed 's/tree\/master/trunk/g' | { read uri; (svn ls --force-interactive $uri); }
+# TODO SOURCE: license_and_attribution
+
+# TODO: check if downloaded is a folder or file
+
+read -r -d '' help_text <<'EOF'
+usage: git ls-sub <github_url>
+
+EOF
+
+# SOURCE: usage
+
+main() {
+  # SOURCE: print_usage_by_default
+
+  # SOURCE: handle_options
+
+  echo "${1}" | sed 's/tree\/master/trunk/g' \
+              | { read uri; (svn ls --force-interactive "$uri"); }
+}
+
+main "$@"

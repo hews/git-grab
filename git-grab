@@ -1,5 +1,35 @@
-#!/bin/sh
+#!/usr/bin/env bash
+
+# TODO SOURCE: license_and_attribution
+# TODO SOURCE: setup
 
 # TODO: check if this file name overwrites another; fail gracefully
 # TODO: add a second argument to name the downloaded folder
-echo ${1} | sed 's/tree\/master/trunk/g' | { read uri; (svn export --force-interactive $uri); }
+
+# TODO SOURCE: error_and_exit
+# TODO SOURCE: command_info
+# TODO SOURCE: basic_helper
+
+read -r -d '' help_text <<'EOF'
+usage: git grab <github_url> [<new_name>]
+
+EOF
+
+# TODO:
+##     -v, --verbose         be verbose; must be placed before a subcommand
+## EOF
+
+# SOURCE: usage
+
+main() {
+  # SOURCE: print_usage_by_default
+
+  # SOURCE: handle_options
+
+  # TODO SOURCE: exit if invalid options or signature!
+
+  echo "${1}" | sed 's/tree\/master/trunk/g' \
+              | { read uri; (svn export --force-interactive "$uri"); }
+}
+
+main "$@"
