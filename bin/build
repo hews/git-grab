@@ -10,7 +10,7 @@ COMMENT  = "(^[\s]*)#[\s]*"
 def parse(line)
   # source sub-script
   if line.match(/#{COMMENT}SOURCE/)
-    sub_script_file_path = "scripts/#{line.chomp.split.last}.sh"
+    sub_script_file_path = "lib/#{line.chomp.split.last}.sh"
     indentation          = $~.captures[0]
 
     source_contents = File.read(sub_script_file_path)
