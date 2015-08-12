@@ -1,4 +1,5 @@
+# Prints the usage text.
 usage () {
-  echo "$help_text"
+  echo "$USAGE_TEXT"
   echo ""
 }

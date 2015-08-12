@@ -1,7 +1,17 @@
-# Turn the GitHub "git-formatted" URL's into GitHub "svn-formatted" URL's
+########################################################################
 #
-# See also: test/test_runner.sh#testRegexTranslations
-function translateURL()
+# translateURL turns the GitHub "git-formatted" URLs into GitHub "svn-
+# formatted" URLs.
+#
+# See also: test/test_runner.sh#testRegexTranslation
+#
+# - Arguments:
+#     - String value of git-formatted URL
+# - Returns: (via echo and command substitution)
+#     - String value of svn-formatted URL
+#
+########################################################################
+function translate_url()
 {
   local original
   local result

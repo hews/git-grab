@@ -21,10 +21,11 @@ def parse(line)
 
     return indentation + source_contents + "\n"
 
-  # skip comments
+  # skip comments: '# TODO ...', '# FIXME ...', '## ...'
+  # (but not '# ...' or '#####...')
   elsif line.match(/#{COMMENT}TODO/)  ||
         line.match(/#{COMMENT}FIXME/) ||
-        line.match(/^[\s]*##/)
+        line.match(/^[\s]*##[^#]/)
     return nil
 
   # copy line
