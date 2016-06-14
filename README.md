@@ -30,6 +30,6 @@ And I use **`git grab`**, and paste in the copied URL!
 Why, it's simple, friend:
 
 ```
-$ brew tap h4w5/tap
+$ brew tap hews/tap
 $ brew install git-grab
 ```
