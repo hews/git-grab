@@ -1,0 +1,122 @@
+#!/usr/bin/env bash
+#        _ _     _                     _
+#   __ _(_) |_  | |___       ___ _   _| |__
+#  / _` | | __| | / __|_____/ __| | | | '_ \
+# | (_| | | |_  | \__ \_____\__ \ |_| | |_) |
+#  \__, |_|\__| |_|___/     |___/\__,_|_.__/
+#  |___/
+#
+# Lists information about a directory or file from a repository hosted on
+# GitHub.
+#
+########################################################################
+#
+# Thanks for the ideas to:
+#
+# - https://gist.github.com/KylePDavis/3901321
+# - http://blogs.atlassian.com/2013/04/extending-git
+#
+# ... and the 40 other blogs and tutorials I googled to better
+# understand bash scripting.
+#
+# All contributions and suggestions are welcome. Send a pull request or
+# open an issue at the [GitHub Repo](https://github.com/h4w5/git-grab).
+# Before submitting a PR, however, **please read**:
+#
+# - https://github.com/h4w5/git-grab/CONTRIBUTING.md
+#
+########################################################################
+#
+# The MIT License (MIT)
+#
+# Copyright (c) 2015, Philip Hughes <p+git@hews.co>
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#
+########################################################################
+
+# Here's how you use the command:
+USAGE_TEXT="usage: git ls-sub <github_url>
+"
+# Prints the usage text.
+usage () {
+  echo "$USAGE_TEXT"
+}
+
+########################################################################
+#
+# translateURL turns the GitHub "git-formatted" URLs into GitHub "svn-
+# formatted" URLs.
+#
+# See also: test/test_runner.sh#testRegexTranslation
+#
+# - Arguments:
+#     - String value of git-formatted URL
+# - Returns: (via echo and command substitution)
+#     - String value of svn-formatted URL
+#
+########################################################################
+function translate_url()
+{
+  local original
+  local result
+
+  original="$1"
+  result=$(echo "$original" | sed 's/tree\/master/trunk/g' \
+                            | sed 's/blob\/master/trunk/g' \
+                            | sed 's/tree\/\(.*\)\//branches\/\1\//g' \
+                            | sed 's/blob\/\(.*\)\//branches\/\1\//g')
+  echo "$result"
+}
+
+########################################################################
+#
+# main is the program itself. Here is the code that we run when we
+# invoke the command!
+#
+########################################################################
+main() {
+  # Print the usage if the command is not passed arguments.
+  if [ $# -lt 1 ]; then
+    usage
+    exit 1
+  fi
+  
+  # Loop through the passed arguments, checking them as options.
+  while [[ $1 = -?* ]]; do
+    case $1 in
+      -h|--help)
+        usage
+        exit 0
+        ;;
+      *) ;;
+    esac
+  
+    shift
+  done
+  
+
+  git_url="${1}"
+  svn_url="$(translate_url "$git_url")"
+  svn ls --force-interactive "$svn_url"
+}
+
+# Run the main command.
+main "$@"
